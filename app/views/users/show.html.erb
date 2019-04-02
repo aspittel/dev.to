@@ -141,7 +141,23 @@
     <% end %>
   </div>
   <% if @tab == 'articles' %>
-    <%= render "users/sidebar" %>
+    <div class="side-bar">
+      <div class="user-sidebar">
+      <% cache "user-profile-sidebar-stats-#{@user.id}-#{@user.last_article_at}-#{@user.last_comment_at}-#{@user.last_followed_at}", expires_in: 10.days do %>
+        <div class="sidebar-data">
+          <div>
+            <%= pluralize @user.articles.where(published: true).size, "Post" %> Published
+          </div>
+          <div>
+            <%= pluralize @user.comments.where(deleted: false).size, "Comment" %> Written
+          </div>
+          <div>
+            <%= pluralize @user.decorate.cached_followed_tags.size, "Tag" %> Followed
+          </div>
+        </div>
+      <% end %>
+      </div>
+    </div>
     <div class="articles-list" id="articles-list">
       <div class="substories" id="substories">
         <%= render "users/main_feed" %>
@@ -153,6 +169,62 @@
   <% end %>
   <% if @tab == 'comment-list' %>
     <%= render "users/comments_section" %>
+  <% end %>
+  <% if @tab == 'about' %>
+    <% cache "user-profile-sidebar-profile-details-#{@user.id}-#{@user.profile_updated_at}", expires_in: 10.days do %>
+      <div class="about-widgets">
+        <div class="widget">
+          <header>
+            <h4>About</h4>
+          </header>
+          <div class="widget-body">
+            <%= @user.summary.presence ? @user.summary : ["404 bio not found"].sample %>
+          </div>
+        </div>
+        <div class="row">
+          <% if @user.mostly_work_with.present? %>
+            <div class="widget">
+              <header>
+                <h4>skills/languages</h4>
+              </header>
+              <div class="widget-body">
+                <%= sanitized_sidebar @user.mostly_work_with %>
+              </div>
+            </div>
+          <% end %>
+          <% if @user.currently_learning.present? %>
+            <div class="widget">
+              <header>
+                <h4>learning/trying</h4>
+              </header>
+              <div class="widget-body">
+                <%= sanitized_sidebar @user.currently_learning %>
+              </div>
+            </div>
+          <% end %>
+          <% if @user.currently_hacking_on.present? %>
+            <div class="widget">
+              <header>
+                <h4>projects and hacks</h4>
+              </header>
+              <div class="widget-body">
+                <%= sanitized_sidebar @user.currently_hacking_on %>
+              </div>
+            </div>
+          <% end %>
+          <% if @user.available_for.present? %>
+            <div class="widget">
+              <header>
+                <h4>available for</h4>
+              </header>
+              <div class="widget-body">
+                <%= sanitized_sidebar @user.available_for %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
   <% end %>
 <%= render "stories/narrow_nav_menu" %>
 <%= render "stories/stories_list_script" %>
