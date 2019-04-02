@@ -3,12 +3,6 @@
     <%= render "stories/sign_in_invitation" %>
   <% end %>
   <%= render "articles/single_story", story: story %>
-  <% if i == 0 && @comments.any? %>
-    <%= render "users/comments_section" %>
-  <% end %>
-<% end %>
-<% if !@stories.any? && @comments.any? %>
-  <%= render "users/comments_section" %>
 <% end %>
 <% if @stories.size > 1 %>
   <div class="placeholder-div"></div>

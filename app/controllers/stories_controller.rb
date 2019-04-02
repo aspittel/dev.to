@@ -158,6 +158,7 @@ class StoriesController < ApplicationController
 
   def handle_user_index
     @user = User.find_by(username: params[:username].tr("@", "").downcase)
+    @tab = params["tab"] || "home"
     unless @user
       redirect_to_changed_username_profile
       return

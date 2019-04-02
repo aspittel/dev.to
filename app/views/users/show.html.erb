@@ -31,7 +31,7 @@
           </span>
           <span class="user-profile-chat-button-wrapper">
             <a href="/connect/@<%= @user.username %>" id="user-connect-redirect" style="display:none">
-              <button class="chat-action-button user-profile-chat-button" id="modal-opener" style="color:<%= user_colors(@user)[:text] %>;background-color:<%=user_colors(@user)[:bg] %>; display:none; ">CHAT</button>
+              <button class="chat-action-button user-profile-chat-button" id="modal-opener" style="color:<%= user_colors(@user)[:text] %>;background-color:<%= user_colors(@user)[:bg] %>; display:none; ">CHAT</button>
             </a>
           </span>
 
@@ -107,7 +107,7 @@
       <div class="overlay"></div>
       <div class="modal-content " id="new-message-modal">
         <button title="Close" class="close-modal">X</button>
-        <form id="new-message-form" class="message-form" data-info='{"id":<%= @user.id%>,"className":"<%= @user.class.name %>","username":"<%= @user.username %>", "showChat":"<%= @user.inbox_type %>"}'>
+        <form id="new-message-form" class="message-form" data-info='{"id":<%= @user.id %>,"className":"<%= @user.class.name %>","username":"<%= @user.username %>", "showChat":"<%= @user.inbox_type %>"}'>
           <textarea id="new-message" rows="4" cols="70" placeholder="Enter your message here..."></textarea>
           <button type="submit" value="Submit" class="submit-message">SEND</button>
         </form>
@@ -122,31 +122,37 @@
      data-algolia-tag="<%= "user_#{@user.id}" %>"
      data-feed="<%= params[:timeframe] || "base-feed" %>"
      data-articles-since="0">
-  <%= render "users/sidebar" %>
-  <div class="articles-list" id="articles-list">
-    <div class="on-page-nav-controls user-nav-controls" id="on-page-nav-controls">
-      <button class="on-page-nav-butt on-page-nav-butt-left" id="on-page-nav-butt-left" aria-label="nav-button-left">
-        <img src="<%= asset_path "stack.svg" %>" alt="left-sidebar-nav">
-      </button>
-      <button class="on-page-nav-butt on-page-nav-butt-right" style="margin-top:-1px;" id="on-page-nav-butt-right" aria-label="nav-button-right">
-        <img style="height:28px;width:28px;" src="<%= asset_path "ribbon.svg" %>" alt="right-sidebar-nav">
-      </button>
-    </div>
-    <div class="substories" id="substories">
-      <% if params[:view] == "comments" %>
-        <%= render "users/comments_section" %>
-      <% elsif @stories.any? || @comments.any? %>
-        <%= render "users/main_feed" %>
-      <% end %>
-    </div>
-    <div class="loading-articles" id="loading-articles">
-      loading...
-    </div>
+  <div class="nav-links">
+    <a class="nav-link <% if @tab == 'home' %>selected<% end %>" href="/<%= @user.username %>">
+      HOME
+    </a>
+    <a class="nav-link <% if @tab == 'about' %>selected<% end %>" href="/<%= @user.username %>/profile/about">
+      ABOUT
+    </a>
+    <% if @stories.any? %>
+      <a class="nav-link <% if @tab == 'articles' %>selected<% end %>" href="/<%= @user.username %>/profile/articles">
+        ARTICLES
+      </a>
+    <% end %>
+    <% if @comments.any? %>
+    <a class="nav-link <% if @tab == 'comment-list' %>selected<% end %>" href="/<%= @user.username %>/profile/comment-list">
+      COMMENTS
+    </a>
+    <% end %>
   </div>
-  <% cache "user-profile-sidebar-additional-#{@user.id}-#{@user.github_repos_updated_at}-#{@user.badge_achievements_count}", expires_in: 2.days do %>
-    <%= render "users/sidebar_additional" %>
+  <% if @tab == 'articles' %>
+    <%= render "users/sidebar" %>
+    <div class="articles-list" id="articles-list">
+      <div class="substories" id="substories">
+        <%= render "users/main_feed" %>
+      </div>
+      <div class="loading-articles" id="loading-articles">
+        loading...
+      </div>
+    </div>
   <% end %>
-</div>
-
+  <% if @tab == 'comment-list' %>
+    <%= render "users/comments_section" %>
+  <% end %>
 <%= render "stories/narrow_nav_menu" %>
 <%= render "stories/stories_list_script" %>

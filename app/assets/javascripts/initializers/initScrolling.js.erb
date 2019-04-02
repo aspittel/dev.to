@@ -3,8 +3,8 @@ function initScrolling() {
 }
 
 function checkIfNearBottomOfPage() {
-  var elCheck = document.getElementById("index-container");
-  
+  var elCheck = document.getElementById("loading-articles");
+
   if (elCheck) {
     var publicSearchKey = '<%= ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY %>'
     client = algoliasearch('<%= ApplicationConfig["ALGOLIASEARCH_APPLICATION_ID"] %>', publicSearchKey);

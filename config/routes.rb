@@ -325,6 +325,8 @@ Rails.application.routes.draw do
   get "/:username/:slug/delete_confirm" => "articles#delete_confirm"
   get "/:username/:view" => "stories#index",
       constraints: { view: /comments|moderate|admin/ }
+  get "/:username" => "stories#index"
+  get "/:username/profile/:tab" => "stories#index"
   get "/:username/:slug" => "stories#show"
   get "/:username" => "stories#index"
 
